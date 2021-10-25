@@ -79,3 +79,4 @@ spec:
 - 2. If there are multiple fieldExpressions, only one of them needs to pass, and matchExpressions are the same.
 - 3. When both the fieldSelector and labelSelector pass, the namespaceSelector is judged to pass.
 - 4. If a StorageClass is mentioned by multiple accessors, it needs to pass all accessor rules.
+-  :warning:  Too many accessors may cause unexpected errors in the webhook. It is recommended that one storageClass corresponds to one accessor.
