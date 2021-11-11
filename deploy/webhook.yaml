@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: storageclass-accessor
-        image: kubespheredev/storageclass-accessor:v1.0 # change the image if you wish to use your own custom validation server image
+        image: f10atin9/storageclass-accessor:v1.0 # change the image if you wish to use your own custom validation server image
         imagePullPolicy: IfNotPresent
         args: ['--tls-cert-file=/etc/storageclass-accessor-webhook/certs/cert.pem', '--tls-private-key-file=/etc/storageclass-accessor-webhook/certs/key.pem']
         ports:
