@@ -45,7 +45,7 @@ func getNameSpace(nameSpaceName string) (*corev1.Namespace, error) {
 	return ns, nil
 }
 
-func getAccessor(storageClassName string) ([]*v1alpha1.Accessor, error) {
+func getAccessors(storageClassName string) ([]*v1alpha1.Accessor, error) {
 	// get config
 	cfg, err := config.GetConfig()
 	if err != nil {

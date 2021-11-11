@@ -80,7 +80,7 @@ func admitPVC(ar admissionv1.AdmissionReview) *admissionv1.AdmissionResponse {
 
 func decidePVCV1(pvc reqInfo) *admissionv1.AdmissionResponse {
 
-	accessors, err := getAccessor(pvc.storageClassName)
+	accessors, err := getAccessors(pvc.storageClassName)
 
 	if err != nil {
 		klog.Error("get accessor failed, err:", err)
