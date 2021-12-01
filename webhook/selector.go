@@ -40,7 +40,7 @@ func matchField(ns *corev1.Namespace, expressions []v1alpha1.FieldExpressions) b
 			switch item.Field {
 			case v1alpha1.Name:
 				val = ns.Name
-			case v1alpha1.Phase:
+			case v1alpha1.Status:
 				val = string(ns.Status.Phase)
 			}
 			switch item.Operator {

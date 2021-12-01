@@ -32,8 +32,8 @@ const (
 	In    Operator = "In"
 	NotIn Operator = "NotIn"
 
-	Name  Field = "Name"
-	Phase Field = "Phase"
+	Name   Field = "Name"
+	Status Field = "Status"
 )
 
 // AccessorSpec defines the desired state of Accessor
