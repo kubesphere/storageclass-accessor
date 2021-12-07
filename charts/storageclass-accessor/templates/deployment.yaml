@@ -23,11 +23,11 @@ spec:
           ports:
             - containerPort: 443 # change the port as needed
           volumeMounts:
-            - name: storageclass-accessor-webhook-certs
+            - name: webhook-cert
               mountPath: /etc/storageclass-accessor-webhook/certs
               readOnly: true
       volumes:
-        - name: storageclass-accessor-webhook-certs
+        - name: webhook-cert
           secret:
             secretName: storageclass-accessor-cert
       serviceAccountName: storageclass-accessor

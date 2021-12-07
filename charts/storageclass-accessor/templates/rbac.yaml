@@ -34,7 +34,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: storageclass-accessor
-    namespace: default
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: storageclass-accessor
