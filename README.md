@@ -5,6 +5,7 @@
 - [Contents](#contents)
 - [Introduction](#introduction)
 - [Installation](#installation)
+    - [Installation by helm-charts](#installation-by-helm-charts)
     - [Quick Start](#quick-start)
     - [Accessor CR](#accessor-cr)
 - [Examples](#examples)
@@ -21,6 +22,12 @@ Users can create accessors and set `namespaceSelector` to achieve **namespace-le
 
 # Installation
 
+## Installation by helm-charts
+```shell
+helm install --create-namespace --namespace storageclass-accessor storageclass-accessor main/storageclass-accessor
+```
+
+See the Chart [README.md](./charts/storageclass-accessor/README.md) for detailed documentation on the Helm Chart
 ## Quick start
 
 The guide describes how to deploy a storageclass-accessor webhook to a cluster and provides an example accessor based on csi-qingcloud.
@@ -34,7 +41,6 @@ kubectl create -f  client/config/crds
 # This script will create a TLS certificate signed by the [cluster]It will place the public and private key into a secret on the cluster.
 ./deploy/create-cert.sh --service storageclass-accessor-service --secret accessor-validation-secret --namespace default # Make sure to use a different namespace
 ```
-Move `cert.pem` and `key.pem` to the path `/etc/storageclass-accessor-webhook/certs`.
 
 
 ### 3. Patch the `ValidatingWebhookConfiguration` file from the template and fill in the CA bundle field
