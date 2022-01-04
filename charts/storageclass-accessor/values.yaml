@@ -1,5 +1,0 @@
-image:
-  repository: f10atin9/storageclass-accessor
-
-webhook:
-  timeoutSeconds: 5

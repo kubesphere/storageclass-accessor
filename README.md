@@ -27,7 +27,7 @@ Users can create accessors and set `namespaceSelector` to achieve **namespace-le
 helm install --create-namespace --namespace storageclass-accessor storageclass-accessor main/storageclass-accessor
 ```
 
-See the Chart [README.md](./charts/storageclass-accessor/README.md) for detailed documentation on the Helm Chart
+See the Chart [README.md](https://github.com/kubesphere/helm-charts/tree/master/src/main/storageclass-accessor) for detailed documentation on the Helm Chart
 ## Quick start
 
 The guide describes how to deploy a storageclass-accessor webhook to a cluster and provides an example accessor based on csi-qingcloud.
