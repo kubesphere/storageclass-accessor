@@ -5,6 +5,7 @@
 - [Contents](#contents)
 - [Introduction](#introduction)
 - [Installation](#installation)
+    - [Installation by helm-charts](#installation-by-helm-charts)
     - [Quick Start](#quick-start)
     - [Accessor CR](#accessor-cr)
 - [Examples](#examples)
@@ -21,6 +22,12 @@ Users can create accessors and set `namespaceSelector` to achieve **namespace-le
 
 # Installation
 
+## Installation by helm-charts
+```shell
+helm install --create-namespace --namespace storageclass-accessor storageclass-accessor main/storageclass-accessor
+```
+
+See the Chart [README.md](https://github.com/kubesphere/helm-charts/tree/master/src/main/storageclass-accessor) for detailed documentation on the Helm Chart
 ## Quick start
 
 The guide describes how to deploy a storageclass-accessor webhook to a cluster and provides an example accessor based on csi-qingcloud.
@@ -34,7 +41,6 @@ kubectl create -f  client/config/crds
 # This script will create a TLS certificate signed by the [cluster]It will place the public and private key into a secret on the cluster.
 ./deploy/create-cert.sh --service storageclass-accessor-service --secret accessor-validation-secret --namespace default # Make sure to use a different namespace
 ```
-Move `cert.pem` and `key.pem` to the path `/etc/storageclass-accessor-webhook/certs`.
 
 
 ### 3. Patch the `ValidatingWebhookConfiguration` file from the template and fill in the CA bundle field
@@ -84,7 +90,7 @@ A complete accessor should have the following fields:
 
   `labelRule` has the following fields:
 
-      1.field: String. Required. Currently supports selection through the "Name" and "Phase" fields.
+      1.field: String. Required. Currently supports selection through the "Name" and "Status" fields.
       2.operator: String. Required. Currently supports selection through the "In" and "NotIn" fields.
       2.values: []String. Required. 
 
@@ -99,7 +105,7 @@ A complete accessor should have the following fields:
 
   `labelRule` has the following fields:
 
-      1.key: String. Required. Currently supports selection through the "Name" and "Phase" fields.
+      1.key: String. Required. Currently supports selection through the "Name" and "Status" fields.
       2.operator: String. Required. Currently supports selection through the "In" and "NotIn" fields.
       2.values: []String. Required. 
 
@@ -166,11 +172,11 @@ spec:
           - field: "Name"
             operator: "NotIn"
             values: ["NS1", "NS2"]
-          - field: "Phase"
+          - field: "Status"
             operator: "In"
             values: ["Active"]
 ```
-You can create the PVC of csi-qingcloud only in the following namespace: (nameSpace.Name NotIn ["NS1", "NS2"]) **and** (nameSpace.Status.Phase in ["Active"])
+You can create the PVC of csi-qingcloud only in the following namespace: (nameSpace.Name NotIn ["NS1", "NS2"]) **and** (nameSpace.Status.Status in ["Active"])
 
 It means that the rules in `fieldExpressions` must be followed at the same time.
 
@@ -249,17 +255,15 @@ spec:
       - fieldExpressions:
           - field: "Name"
             operator: "In"
-
             values: ["NS1", "NS2"]
       - fieldExpressions:
-          - field: "Phase"
+          - field: "Status"
             operator: "In"
             values: ["Active"]
     labelSelector:
       - matchExpressions:
           - key: "app"
             operator: "In"
-
             values: ["app1"]
           - key: "owner"
             operator: "In"
@@ -272,8 +276,8 @@ spec:
 It is allowed to create PVC in a namespace that meets one of the following conditions:
 - (name in ["NS1", "NS2"]) **and** (have the key "app" label and in the value in ["app1"]) **and** (have the key "owner" label and the value in ["owner1", "owner2"])
 - (name in ["NS1", "NS2"]) **and** (have the key "app" label and in the value in ["app2", "app3"])
-- (status.Phase in ["Active"]) **and** (have the key "app" label and in the value in ["app1"]) **and** (have the key "owner" label and the value in ["owner1", "owner2"])
-- (status.Phase in ["Active"]) **and** (have the key "app" label and in the value in ["app2", "app3"])
+- (status.Status in ["Active"]) **and** (have the key "app" label and in the value in ["app1"]) **and** (have the key "owner" label and the value in ["owner1", "owner2"])
+- (status.Status in ["Active"]) **and** (have the key "app" label and in the value in ["app2", "app3"])
 
 # Notice
 
