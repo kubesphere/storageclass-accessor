@@ -24,7 +24,7 @@ import (
 
 type Operator string
 
-// +kubebuilder:validation:Enum=Name;Phase
+// +kubebuilder:validation:Enum=Name;Status
 
 type Field string
 
@@ -40,6 +40,7 @@ const (
 type AccessorSpec struct {
 	StorageClassName  string        `json:"storageClassName"`
 	NameSpaceSelector NameSpaceList `json:"namespaceSelector"`
+	WorkSpaceSelector WorkSpaceList `json:"workspaceSelector"`
 }
 
 type NameSpaceList struct {
@@ -64,6 +65,10 @@ type FieldExpression struct {
 	Field    Field    `json:"field"`
 	Operator Operator `json:"operator"`
 	Values   []string `json:"values"`
+}
+
+type WorkSpaceList struct {
+	FieldSelector []FieldExpressions `json:"fieldSelector"`
 }
 
 //+kubebuilder:object:root=true

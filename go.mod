@@ -8,5 +8,6 @@ require (
 	k8s.io/api v0.22.1
 	k8s.io/apimachinery v0.22.1
 	k8s.io/klog/v2 v2.9.0
+	kubesphere.io/api v0.0.0-20210917114432-19cb9aacd65f
 	sigs.k8s.io/controller-runtime v0.10.0
 )

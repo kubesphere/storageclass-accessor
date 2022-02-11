@@ -101,12 +101,47 @@ spec:
                           - matchExpressions
                         type: object
                       type: array
+                  required:
+                    - fieldSelector
+                    - labelSelector
                   type: object
                 storageClassName:
                   type: string
-              required:
-                - namespaceSelector
-                - storageClassName
+                workspaceSelector:
+                  properties:
+                    fieldSelector:
+                      items:
+                        properties:
+                          fieldExpressions:
+                            items:
+                              properties:
+                                field:
+                                  enum:
+                                    - Name
+                                    - Status
+                                  type: string
+                                operator:
+                                  enum:
+                                    - In
+                                    - NotIn
+                                  type: string
+                                values:
+                                  items:
+                                    type: string
+                                  type: array
+                              required:
+                                - field
+                                - operator
+                                - values
+                              type: object
+                            type: array
+                        required:
+                          - fieldExpressions
+                        type: object
+                      type: array
+                  required:
+                    - fieldSelector
+                  type: object
               type: object
           type: object
       served: true

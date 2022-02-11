@@ -94,6 +94,9 @@ func decidePVCV1(pvc reqInfo) *admissionv1.AdmissionResponse {
 		if err = validateNameSpace(pvc, accessor); err != nil {
 			return toV1AdmissionResponse(err)
 		}
+		if err = validateWorkSpace(pvc, accessor); err != nil {
+			return toV1AdmissionResponse(err)
+		}
 	}
 	return reviewResponse
 }
