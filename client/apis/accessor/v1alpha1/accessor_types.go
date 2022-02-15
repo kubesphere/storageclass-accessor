@@ -68,6 +68,7 @@ type FieldExpression struct {
 }
 
 type WorkSpaceList struct {
+	LabelSelector []MatchExpressions `json:"labelSelector"`
 	FieldSelector []FieldExpressions `json:"fieldSelector"`
 }
 

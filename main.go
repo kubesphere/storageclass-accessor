@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
+	"github.com/kubesphere/storageclass-accessor/webhook"
 	"k8s.io/klog/v2"
-	"storageclass-accessor/webhook"
 )
 
 func main() {

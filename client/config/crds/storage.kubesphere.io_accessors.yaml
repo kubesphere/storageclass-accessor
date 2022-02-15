@@ -101,9 +101,6 @@ spec:
                           - matchExpressions
                         type: object
                       type: array
-                  required:
-                    - fieldSelector
-                    - labelSelector
                   type: object
                 storageClassName:
                   type: string
@@ -139,9 +136,36 @@ spec:
                           - fieldExpressions
                         type: object
                       type: array
-                  required:
-                    - fieldSelector
+                    labelSelector:
+                      items:
+                        properties:
+                          matchExpressions:
+                            items:
+                              properties:
+                                key:
+                                  type: string
+                                operator:
+                                  enum:
+                                    - In
+                                    - NotIn
+                                  type: string
+                                values:
+                                  items:
+                                    type: string
+                                  type: array
+                              required:
+                                - key
+                                - operator
+                                - values
+                              type: object
+                            type: array
+                        required:
+                          - matchExpressions
+                        type: object
+                      type: array
                   type: object
+              required:
+                - storageClassName
               type: object
           type: object
       served: true

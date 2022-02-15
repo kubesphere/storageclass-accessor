@@ -3,6 +3,7 @@ package webhook
 import (
 	"context"
 	"fmt"
+	"github.com/kubesphere/storageclass-accessor/client/apis/accessor/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -10,7 +11,6 @@ import (
 	workspacev1alpha1 "kubesphere.io/api/tenant/v1alpha1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
-	"storageclass-accessor/client/apis/accessor/v1alpha1"
 )
 
 func validateNameSpace(reqResource reqInfo, accessor *v1alpha1.Accessor) error {
@@ -46,8 +46,10 @@ func validateWorkSpace(reqResource reqInfo, accessor *v1alpha1.Accessor) error {
 		if err != nil {
 			klog.Error("Cannot get the workspace")
 		}
-		fieldPass := wsMatchField(ws, accessor.Spec.WorkSpaceSelector.FieldSelector)
-		if fieldPass {
+		var fieldPass, labelPass bool
+		fieldPass = wsMatchField(ws, accessor.Spec.WorkSpaceSelector.FieldSelector)
+		labelPass = matchLabel(ns.Labels, accessor.Spec.WorkSpaceSelector.LabelSelector)
+		if fieldPass && labelPass {
 			return nil
 		}
 
