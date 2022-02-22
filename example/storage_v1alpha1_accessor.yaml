@@ -6,7 +6,40 @@ spec:
   storageClassName: "csi-qingcloud"
   namespaceSelector:
     fieldSelector:
+      # 1. ns name in ["default", "test-ns"]
       - fieldExpressions:
           - field: "Name"
             operator: "In"
-            values: ["default"]
+            values: ["default", "test-ns"]
+      # 2. ns status NotIn ["Terminating"]
+      - fieldExpressions:
+          - field: "Status"
+            operator: "NotIn"
+            values: ["Terminating"]
+    labelSelector:
+      # 3. ns has labels: key is "app" value in ["test-app"] and key is "role" value in ["admin", "user"]
+      - matchExpressions:
+          - key: "app"
+            operator: "In"
+            values: ["test-app"]
+          - key: "role"
+            operator: "In"
+            values: ["admin", "user"]
+      # 4. ns has label which key is "app" and value in ["test-app2"]
+      - matchExpressions:
+          - key: "app"
+            operator: "In"
+            values: ["test-app2"]
+  workspaceSelector:
+    fieldSelector:
+      # 5. ws name in [ "system-workspace"]
+      - fieldExpressions:
+        - field: "Name"
+          operator: "In"
+          values: [ "system-workspace"]
+
+# The following are available through:
+#  (1 && 3) && 5
+#  (1 && 4) && 5
+#  (2 && 3) && 5
+#  (2 && 4) && 5

@@ -1,8 +1,9 @@
 package webhook
 
 import (
+	"github.com/kubesphere/storageclass-accessor/client/apis/accessor/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
-	"storageclass-accessor/client/apis/accessor/v1alpha1"
+	workspacev1alpha1 "kubesphere.io/api/tenant/v1alpha1"
 )
 
 func matchLabel(info map[string]string, expressions []v1alpha1.MatchExpressions) bool {
@@ -52,6 +53,32 @@ func matchField(ns *corev1.Namespace, expressions []v1alpha1.FieldExpressions) b
 		}
 		if rulePass {
 			return rulePass
+		}
+	}
+	return false
+}
+
+func wsMatchField(ws *workspacev1alpha1.Workspace, expressions []v1alpha1.FieldExpressions) bool {
+	if len(expressions) == 0 {
+		return true
+	}
+
+	for _, rule := range expressions {
+		pass := true
+		for _, item := range rule.FieldExpressions {
+			switch item.Field {
+			case v1alpha1.Status:
+				continue
+			}
+			switch item.Operator {
+			case v1alpha1.In:
+				pass = pass && inList(ws.Name, item.Values)
+			case v1alpha1.NotIn:
+				pass = pass && !inList(ws.Name, item.Values)
+			}
+		}
+		if pass {
+			return pass
 		}
 	}
 	return false
