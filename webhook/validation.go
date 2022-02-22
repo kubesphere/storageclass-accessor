@@ -40,7 +40,7 @@ func validateWorkSpace(reqResource reqInfo, accessor *v1alpha1.Accessor) error {
 		klog.Error(err)
 		return err
 	}
-	if wsName, ok := ns.Annotations["kubesphere.io/workspace"]; ok {
+	if wsName, ok := ns.Labels["kubesphere.io/workspace"]; ok {
 		var ws *workspacev1alpha1.Workspace
 		ws, err = getWorkSpace(wsName)
 		if err != nil {
@@ -122,5 +122,8 @@ func getWorkSpace(workspaceName string) (*workspacev1alpha1.Workspace, error) {
 	}
 	workspace := &workspacev1alpha1.Workspace{}
 	err = cli.Get(context.Background(), types.NamespacedName{Namespace: "", Name: workspaceName}, workspace)
+	if err != nil {
+		klog.Error("can't get the workspace by name, err:", err)
+	}
 	return workspace, err
 }
