@@ -11,7 +11,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
-type reqInfo struct {
+type ReqInfo struct {
 	resource         string
 	name             string
 	namespace        string
@@ -24,7 +24,7 @@ var reviewResponse = &admissionv1.AdmissionResponse{
 	Result:  &metav1.Status{},
 }
 
-func admitPVC(ar admissionv1.AdmissionReview) *admissionv1.AdmissionResponse {
+func AdmitPVC(ar admissionv1.AdmissionReview) *admissionv1.AdmissionResponse {
 	klog.Info("admitting pvc")
 
 	if !(ar.Request.Operation == admissionv1.Delete || ar.Request.Operation == admissionv1.Create) {
@@ -68,17 +68,17 @@ func admitPVC(ar admissionv1.AdmissionReview) *admissionv1.AdmissionResponse {
 		newPVC = targetPVC
 	}
 
-	reqPVC := reqInfo{
+	reqPVC := ReqInfo{
 		resource:         "persistentVolumeClaim",
 		name:             newPVC.Name,
 		namespace:        newPVC.Namespace,
 		operator:         string(ar.Request.Operation),
 		storageClassName: *newPVC.Spec.StorageClassName,
 	}
-	return decidePVCV1(reqPVC)
+	return DecidePVCV1(reqPVC)
 }
 
-func decidePVCV1(pvc reqInfo) *admissionv1.AdmissionResponse {
+func DecidePVCV1(pvc ReqInfo) *admissionv1.AdmissionResponse {
 
 	accessors, err := getAccessors(pvc.storageClassName)
 
