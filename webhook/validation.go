@@ -13,7 +13,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
-func validateNameSpace(reqResource reqInfo, accessor *v1alpha1.Accessor) error {
+func validateNameSpace(reqResource ReqInfo, accessor *v1alpha1.Accessor) error {
 	klog.Info("start validate namespace")
 	//accessor, err := getAccessor()
 	ns, err := getNameSpace(reqResource.namespace)
@@ -32,7 +32,7 @@ func validateNameSpace(reqResource reqInfo, accessor *v1alpha1.Accessor) error {
 	return fmt.Errorf("The storageClass: %s does not allowed %s %s %s in the namespace: %s ", reqResource.storageClassName, reqResource.operator, reqResource.resource, reqResource.name, reqResource.namespace)
 }
 
-func validateWorkSpace(reqResource reqInfo, accessor *v1alpha1.Accessor) error {
+func validateWorkSpace(reqResource ReqInfo, accessor *v1alpha1.Accessor) error {
 	klog.Info("start validate workspace")
 
 	ns, err := getNameSpace(reqResource.namespace)

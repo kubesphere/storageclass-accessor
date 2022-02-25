@@ -123,7 +123,7 @@ func server(w http.ResponseWriter, r *http.Request, admit admitHandler) {
 }
 
 func serverPVCRequest(w http.ResponseWriter, r *http.Request) {
-	server(w, r, newDelegateToV1AdmitHandler(admitPVC))
+	server(w, r, newDelegateToV1AdmitHandler(AdmitPVC))
 }
 
 func startServer(ctx context.Context, tlsConfig *tls.Config, cw *CertWatcher) error {
