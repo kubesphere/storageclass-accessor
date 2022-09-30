@@ -51,6 +51,9 @@ func admitPVC(ar admissionv1.AdmissionReview) *admissionv1.AdmissionResponse {
 			return toV1AdmissionResponse(err)
 		}
 	case admissionv1.Delete:
+		if ar.Request.Namespace != "" && ar.Request.Name == "" {
+			return reviewResponse
+		}
 		pvcInfo := types.NamespacedName{
 			Namespace: ar.Request.Namespace,
 			Name:      ar.Request.Name,
