@@ -68,10 +68,11 @@ func DecidePVCV1(pvc ReqInfo) *admissionv1.AdmissionResponse {
 	}
 
 	for _, accessor := range accessors {
-		if err = validateNameSpace(pvc, accessor); err != nil {
+		klog.Info("Starting validating accessor", accessor.Name)
+		if err = validateNameSpace(pvc, &accessor); err != nil {
 			return toV1AdmissionResponse(err)
 		}
-		if err = validateWorkSpace(pvc, accessor); err != nil {
+		if err = validateWorkSpace(pvc, &accessor); err != nil {
 			return toV1AdmissionResponse(err)
 		}
 	}
