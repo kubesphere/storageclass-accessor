@@ -1,9 +1,10 @@
 package webhook
 
 import (
-	"github.com/kubesphere/storageclass-accessor/client/apis/accessor/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	workspacev1alpha1 "kubesphere.io/api/tenant/v1alpha1"
+
+	"github.com/kubesphere/storageclass-accessor/client/apis/accessor/v1alpha1"
 )
 
 func matchLabel(info map[string]string, expressions []v1alpha1.MatchExpressions) bool {
@@ -14,6 +15,9 @@ func matchLabel(info map[string]string, expressions []v1alpha1.MatchExpressions)
 	for _, rule := range expressions {
 		rulePass := true
 		for _, item := range rule.MatchExpressions {
+			if len(item.Values) == 0 {
+				return true
+			}
 			switch item.Operator {
 			case v1alpha1.In:
 				rulePass = rulePass && inList(info[item.Key], item.Values)

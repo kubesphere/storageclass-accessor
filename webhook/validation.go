@@ -3,7 +3,7 @@ package webhook
 import (
 	"context"
 	"fmt"
-	"github.com/kubesphere/storageclass-accessor/client/apis/accessor/v1alpha1"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -11,6 +11,8 @@ import (
 	workspacev1alpha1 "kubesphere.io/api/tenant/v1alpha1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
+
+	"github.com/kubesphere/storageclass-accessor/client/apis/accessor/v1alpha1"
 )
 
 func validateNameSpace(reqResource ReqInfo, accessor *v1alpha1.Accessor) error {
@@ -74,7 +76,7 @@ func getNameSpace(nameSpaceName string) (*corev1.Namespace, error) {
 	return ns, nil
 }
 
-func getAccessors(storageClassName string) ([]*v1alpha1.Accessor, error) {
+func getAccessors(storageClassName string) ([]v1alpha1.Accessor, error) {
 	// get config
 	cfg, err := config.GetConfig()
 	if err != nil {
@@ -97,10 +99,10 @@ func getAccessors(storageClassName string) ([]*v1alpha1.Accessor, error) {
 		// TODO If not found , pass or not?
 		return nil, err
 	}
-	list := make([]*v1alpha1.Accessor, 0)
+	list := make([]v1alpha1.Accessor, 0)
 	for _, accessor := range accessorList.Items {
 		if accessor.Spec.StorageClassName == storageClassName {
-			list = append(list, &accessor)
+			list = append(list, accessor)
 		}
 	}
 	return list, nil
