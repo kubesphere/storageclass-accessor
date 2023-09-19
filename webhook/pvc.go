@@ -58,8 +58,6 @@ func (a *Admitter) serverPVCRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Admitter) AdmitPVC(ar admissionv1.AdmissionReview) *admissionv1.AdmissionResponse {
-	klog.Infof("admission review: %v", ar)
-
 	if ar.Request.Operation != admissionv1.Create {
 		return reviewResponse
 	}
@@ -87,6 +85,8 @@ func (a *Admitter) AdmitPVC(ar admissionv1.AdmissionReview) *admissionv1.Admissi
 		operator:         string(ar.Request.Operation),
 		storageClassName: *newPVC.Spec.StorageClassName,
 	}
+
+	klog.Infof("request pvc: %v", reqPVC)
 	return a.decidePVCV1(context.Background(), reqPVC)
 }
 
