@@ -17,8 +17,10 @@
 # Introduction
 
 The storageclass-accessor webhook is an HTTP callback which responds to admission requests.
-When creating and deleting the PVC, it will take out the accessor related to this storage class, and the request will be allowed only when all accessors pass the verification.
-Users can create accessors and set `namespaceSelector` to achieve **namespace-level** management on the storage class which provisions PVC.
+
+When creating PVC, it will take out the accessor related to this storage class, and the request will be allowed only when all accessors pass the verification.
+
+Users can create accessors and set `namespaceSelector` to achieve **namespace-level** management and/or set `workspaceSelector` to achieve **workspace-level** management on the storage class which provisions the PVC.
 
 # Installation
 
@@ -36,30 +38,23 @@ The guide describes how to deploy a storageclass-accessor webhook to a cluster a
 kubectl create -f  client/config/crds
 ```
 
-### 2. Create certificate and secret
+### 2. Prepare deployment
 ```bash
-# This script will create a TLS certificate signed by the [cluster]It will place the public and private key into a secret on the cluster.
-./deploy/create-cert.sh --service storageclass-accessor-service --secret accessor-validation-secret --namespace default # Make sure to use a different namespace
+./deploy/prepare.sh --namespace xyz
 ```
 
-
-### 3. Patch the `ValidatingWebhookConfiguration` file from the template and fill in the CA bundle field
+### 3. Deploy
 ```shell
-cat ./deploy/pvc-accessor-configuration-template | ./deploy/patch-ca-bundle.sh > ./deploy/pvc-accessor-configuration.yaml
+kubectl apply -f ./deploy
 ```
 
-### 4. Deploy
-```shell
-kubectl apply -f deploy
-```
-
-### 5. Write a CR
+### 4. Write a CR
 Create your accessor according to your needs by referring to [Accessor CR](#accessor-cr) and [Examples](#Examples).
 
-### 6. Apply CR
+### 5. Apply CR
 Use the `kubectl apply` command to make the accessor you created operational.
 
-### 7. Test
+### 6. Test
 Now you can try to create a PVC. If it is created in a namespace that is not allowed, the following error will be output:
 
 > Error from server: error when creating "PVC.yaml": admission webhook "pvc-accessor.storage.kubesphere.io" denied the request: The storageClass: **StorageClassName** does not allowed CREATE persistentVolumeClaim **PVC-NAME** in the namespace: **TARGET-NS**
