@@ -1,17 +1,16 @@
-GIT_COMMIT=$(shell git rev-parse HEAD | head -c 7)
-IMG ?= kubesphere/storageclass-accessor:${GIT_COMMIT}
-IMGLATEST ?= kubesphere/storageclass-accessor:latest
+REPO ?= kubesphere
+TAG ?= latest
 
-.PHONY: build
-build:
-	go mod tidy && go mod verify && go build -o bin/manager main.go
+build-local: ; $(info $(M)...Begin to build storageclass-accessor binary.)  @ ## Build storageclass-accessor.
+	CGO_ENABLED=0 go build -ldflags \
+	"-X 'main.goVersion=$(shell go version|sed 's/go version //g')' \
+	-X 'main.gitHash=$(shell git describe --dirty --always --tags)' \
+	-X 'main.buildTime=$(shell TZ=UTC-8 date +%Y-%m-%d" "%H:%M:%S)'" \
+	-o bin/manager main.go
 
-.PHONY: docker-build
-docker-build: #test ## Build docker image with the manager.
-	docker build -t ${IMG} .
+build-image: ; $(info $(M)...Begin to build storageclass-accessor image.)  @ ## Build storageclass-accessor image.
+	docker build -f Dockerfile -t ${REPO}/storageclass-accessor:${TAG}  .
+	docker push ${REPO}/storageclass-accessor:${TAG}
 
-.PHONY: docker-push
-docker-push: ## Push docker image with the manager.
-	docker push ${IMG}
-	docker tag ${IMG} ${IMGLATEST}
-	docker push ${IMGLATEST}
+build-cross-image: ; $(info $(M)...Begin to build storageclass-accessor image.)  @ ## Build storageclass-accessor image.
+	docker buildx build -f Dockerfile -t ${REPO}/storageclass-accessor:${TAG} --push --platform linux/amd64,linux/arm64 .
