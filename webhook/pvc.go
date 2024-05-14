@@ -21,6 +21,16 @@ type ReqInfo struct {
 	storageClassName string
 }
 
+func NewPVCReqInfo(name string, namespace string, storageClassName string, operation admissionv1.Operation) ReqInfo {
+	return ReqInfo{
+		resource:         "persistentVolumeClaim",
+		name:             name,
+		namespace:        namespace,
+		operator:         string(operation),
+		storageClassName: storageClassName,
+	}
+}
+
 var reviewResponse = &admissionv1.AdmissionResponse{
 	Allowed: true,
 	Result:  &metav1.Status{},
@@ -85,13 +95,12 @@ func (a *Admitter) AdmitPVC(ar admissionv1.AdmissionReview) *admissionv1.Admissi
 		return toV1AdmissionResponse(err)
 	}
 
-	reqPVC := ReqInfo{
-		resource:         "persistentVolumeClaim",
-		name:             newPVC.Name,
-		namespace:        newPVC.Namespace,
-		operator:         string(ar.Request.Operation),
-		storageClassName: *newPVC.Spec.StorageClassName,
+	if newPVC.Spec.StorageClassName == nil {
+		klog.Infof("pvc %s in namespace %s has no StorageClassName, allow it.", newPVC.Name, newPVC.Namespace)
+		return reviewResponse
 	}
+
+	reqPVC := NewPVCReqInfo(newPVC.Name, newPVC.Namespace, *newPVC.Spec.StorageClassName, ar.Request.Operation)
 
 	klog.Infof("request pvc: %v", reqPVC)
 	return a.DecidePVC(context.Background(), reqPVC)
