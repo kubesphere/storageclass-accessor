@@ -26,11 +26,18 @@ var reviewResponse = &admissionv1.AdmissionResponse{
 	Result:  &metav1.Status{},
 }
 
+type PVCAdmitter interface {
+	AdmitPVC(ar admissionv1.AdmissionReview) *admissionv1.AdmissionResponse
+	DecidePVC(ctx context.Context, pvc ReqInfo) *admissionv1.AdmissionResponse
+}
+
 type Admitter struct {
 	client client.Client
 }
 
-func NewAdmitter() (*Admitter, error) {
+var _ PVCAdmitter = (*Admitter)(nil)
+
+func newAdmitter() (*Admitter, error) {
 	cfg, err := config.GetConfig()
 	if err != nil {
 		return nil, err
@@ -47,7 +54,7 @@ func NewAdmitter() (*Admitter, error) {
 	return a, nil
 }
 
-func NewAdmitterWithClient(client client.Client) *Admitter {
+func NewAdmitterWithClient(client client.Client) PVCAdmitter {
 	return &Admitter{
 		client: client,
 	}
@@ -87,10 +94,10 @@ func (a *Admitter) AdmitPVC(ar admissionv1.AdmissionReview) *admissionv1.Admissi
 	}
 
 	klog.Infof("request pvc: %v", reqPVC)
-	return a.decidePVCV1(context.Background(), reqPVC)
+	return a.DecidePVC(context.Background(), reqPVC)
 }
 
-func (a *Admitter) decidePVCV1(ctx context.Context, pvc ReqInfo) *admissionv1.AdmissionResponse {
+func (a *Admitter) DecidePVC(ctx context.Context, pvc ReqInfo) *admissionv1.AdmissionResponse {
 	accessors, err := a.getAccessors(ctx, pvc.storageClassName)
 
 	if err != nil {
