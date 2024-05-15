@@ -163,7 +163,7 @@ func main(cmd *cobra.Command, args []string) {
 		GetCertificate: cw.GetCertificate,
 	}
 
-	admitter, err := newAdmitter()
+	admitter, err := NewAdmitter()
 	if err != nil {
 		klog.Fatalf("failed to initialize new admitter: %v", err)
 	}

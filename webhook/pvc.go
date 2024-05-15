@@ -47,7 +47,7 @@ type Admitter struct {
 
 var _ PVCAdmitter = (*Admitter)(nil)
 
-func newAdmitter() (*Admitter, error) {
+func NewAdmitter() (*Admitter, error) {
 	cfg, err := config.GetConfig()
 	if err != nil {
 		return nil, err
