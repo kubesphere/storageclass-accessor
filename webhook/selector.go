@@ -1,8 +1,7 @@
 package webhook
 
 import (
-	"slices"
-
+	"github.com/kubesphere/storageclass-accessor/utils/strings/slices"
 	corev1 "k8s.io/api/core/v1"
 	workspacev1alpha1 "kubesphere.io/api/tenant/v1alpha1"
 
